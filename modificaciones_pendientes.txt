@@ -1,0 +1,5 @@
+global.h struct truck
+crossover.c y mutation.c
+problem_instance.c
+reader.c
+eval.c

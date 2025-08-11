@@ -1,0 +1,26 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: NSGA-2 for RCMDVRP
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: Sebastián
+    family-names: Baeza Avello
+    email: sebastian.baezaa@usm.cl
+    affiliation: Universidad Técnica Federico Santa María
+repository-code: >-
+  https://github.com/SebastianBaeza/Proyecto_Algoritmos_Multiobjetivo
+abstract: >-
+  Este es un algoritmo experimental, donde se implementa una
+  variante de NSGA-2 para resolver el problema RCMDVRP,
+  usando swap mutation y sinusoidal movement crossover
+keywords:
+  - RCMDVRP
+  - Optimización
+  - Bi-objetivo
+  - Algoritmos Geneticos
+  - NSGA-2
