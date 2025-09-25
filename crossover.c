@@ -10,20 +10,17 @@
 
 int valueinarray(int val, int *arr, int n) {
     int i;
-/*     printf("Searching for value %d in array of length %d\n", val, n); */
     if (n <= 0) {
-        printf("Array is empty or invalid length.\n");
+        /* printf("Array is empty or invalid length: %d\n", n); */
         return 0;
     }
     if (arr == NULL) {
-        printf("Array pointer is NULL.\n");
+        /* printf("Array pointer is NULL.\n"); */
         return 0;
     }
     for(i = 0; i < n; i++) {
         if(arr[i] == val)
         {
-/*             printf("Value %d found at index %d\n", arr[i], i);
-            printf("Value found in array. Ending iteration\n"); */
             return 1;
         }
     }
@@ -86,7 +83,7 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
         child2_n->route_length = 0;
 
 /*         // Copia rutas de los padres a los temporales */
-/*         printf("Parent1 route: ");
+        printf("Parent1 route: ");
         for (i = 0; i < parent1->route_length; i++) {
             printf("%d ", parent1->route[i]);
         }
@@ -95,9 +92,6 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
             printf("%d ", parent2->route[i]);
         }
         printf("\n");
-        printf("parent1->route_length: %d, parent2->route_length: %d\n", parent1->route_length, parent2->route_length);
-        printf("\n");
- */
         for (i = 0; i < n_customers; i++) {
             if (parent1->route[internal_counter1] > 0) {
                 parent1_n->route[i] = parent1->route[internal_counter1];
@@ -249,7 +243,7 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
             } */
             else
             {
-                printf("No crossover performed, copying parent1 to child1 and parent2 to child2\n");
+                /*printf("No crossover performed, copying parent1 to child1 and parent2 to child2\n"); */
                 child1->route_length = parent1->route_length;
                 child2->route_length = parent2->route_length;
                 for (i = 0; i < parent1->route_length; i++)
@@ -279,7 +273,7 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
     } */
     else
     {
-        printf("No crossover performed, copying parent1 to child1 and parent2 to child2\n");
+        /* printf("No crossover performed, copying parent1 to child1 and parent2 to child2\n"); */
         child1->route_length = parent1->route_length;
         child2->route_length = parent2->route_length;
         for (i = 0; i < parent1->route_length; i++)
@@ -287,20 +281,18 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
         for (i = 0; i < parent2->route_length; i++)
         child2->route[i] = parent2->route[i];
     }
-/*     printf("Final child1 route: ");
+    printf("Final child1 route: ");
     for (i=0;i < child1->route_length; i++)
     {
         printf("%d ", child1->route[i]);
     }
-    printf("\nChild 1 route length: %d\n", child1->route_length);
 
     printf("Final child2 route: ");
     for (i=0;i < child2->route_length; i++)
     {
         printf("%d ", child2->route[i]);
     }
-    printf("\nChild 2 route length: %d\n", child2->route_length);
-    printf("--- Sinusoidal Motion crossover completed ---\n"); */
+    printf("\n--- Sinusoidal Motion crossover completed ---\n"); 
     return;
 }
 /* Routine for real variable SBX crossover */

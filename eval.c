@@ -150,7 +150,8 @@ void evaluate_ind(individual *ind)
             total_distance += dist;
             total_emissions += emission;
             current_capacity += demanda;
-            current_risk += dist * demanda;
+            /* current_risk += dist * demanda; */
+            current_risk += dist * current_capacity;
 
             prev_node = current_node;
         }

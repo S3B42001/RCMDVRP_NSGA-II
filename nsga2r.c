@@ -37,29 +37,7 @@ int obj2;
 int obj3;
 int angle1;
 int angle2;
-/*
-int n_depots = 0;
-int n_customers = 0;
-int n_vehicles = 0;
-int n_nodes = 0;
-int set_O[MAX_NODES];
-int set_R[MAX_NODES];
-int set_S[MAX_NODES];
-int set_K[MAX_VEHICLES];
-int demanda = 0;
-double sigma[11][2];
-int b = 0;
-double theta = 0.0;
-double peso_vacio = 0.0;
-double alpha[5], beta[5], gamma_param[5], delta_param[5], epsilon[5], zeta[5], hta[5];
-int dm[MAX_NODES];
-double d[MAX_NODES][MAX_NODES];
-int v[MAX_NODES][MAX_NODES];
-int f[MAX_NODES];
-int cliente = 0;
-int cliente_anterior = 0;
-int separador = 0;
-*/
+
 int n_depots;
 int n_customers;
 int n_vehicles;
@@ -81,36 +59,6 @@ int f[MAX_NODES];
 int cliente;
 int cliente_anterior;
 int separador;
-/*
-int nreal = 0;
-int nbin = 0;
-int nobj = 0;
-int ncon = 0;
-int popsize = 0;
-double pcross_real = 0.0;
-double pcross_bin = 0.0;
-double pmut_real = 0.0;
-double pmut_bin = 0.0;
-double eta_c = 0.0;
-double eta_m = 0.0;
-int ngen = 0;
-int nbinmut = 0;
-int nrealmut = 0;
-int nbincross = 0;
-int nrealcross = 0;
-int *nbits = NULL;
-double *min_realvar = NULL;
-double *max_realvar = NULL;
-double *min_binvar = NULL;
-double *max_binvar = NULL;
-int bitlength = 0;
-int choice = 0;
-int obj1 = 0;
-int obj2 = 0;
-int obj3 = 0;
-int angle1 = 0;
-int angle2 = 0;
-*/
 
 int main (int argc, char **argv)
 {
@@ -341,7 +289,7 @@ int main (int argc, char **argv)
     report_pop (parent_pop, fpt1);
     fprintf(fpt4,"# gen = 1\n");
     report_pop(parent_pop,fpt4);
-    printf("\n gen = 1");
+    printf("\n gen = 1\n");
     fflush(stdout);
     /*if (choice!=0)
         onthefly_display (parent_pop,gp,1);*/
@@ -367,7 +315,7 @@ int main (int argc, char **argv)
         fprintf(fpt4,"# gen = %d\n",i);
         report_pop(parent_pop,fpt4);
         fflush(fpt4);
-        printf("\n gen = %d",i);
+        printf("\n gen = %d\n",i);
     }
 /*     printf("\n Generations finished, now reporting solutions"); */
     report_pop(parent_pop,fpt2);
