@@ -1,9 +1,0 @@
-# This file contains information about inputs as read by the program
-
- Population size = 4
- Number of generations = 100
- Number of objective functions = 2
- Number of constraints = 3
- Seed for random number generator = 5.500000e-01
- Number of crossover of real variable = 197
- Number of mutation of real variable = 389

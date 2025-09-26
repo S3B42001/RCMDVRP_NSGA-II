@@ -60,10 +60,14 @@ int cliente;
 int cliente_anterior;
 int separador;
 
+/* Variables para usar en el mismo codigo */
+
+int i;
+char * instance_route;
 int main (int argc, char **argv)
 {
     printf("\n NSGA-II routine started \n");
-    int i;
+    /* int i; */
     FILE *fpt1;
     FILE *fpt2;
     FILE *fpt3;
@@ -104,7 +108,7 @@ int main (int argc, char **argv)
     }
     printf("\n Output files opened successfully \n");
 
-    char * instance_route = argv[2];
+    instance_route = argv[2];
     /* readInputFile(instance_route, pi); */
     readInputFile(instance_route);
 
@@ -308,8 +312,8 @@ int main (int argc, char **argv)
 /*         printf("\n Mutation done, now decoding and evaluating child population"); */
         decode_pop(child_pop);
         evaluate_pop(child_pop);
-        merge (parent_pop, child_pop, mixed_pop);
-        fill_nondominated_sort (mixed_pop, parent_pop);
+        merge(parent_pop, child_pop, mixed_pop);
+        fill_nondominated_sort(mixed_pop, parent_pop);
         /* Comment following four lines if information for all
         generations is not desired, it will speed up the execution */
         fprintf(fpt4,"# gen = %d\n",i);

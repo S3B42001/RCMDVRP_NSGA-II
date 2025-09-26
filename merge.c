@@ -36,7 +36,7 @@ void copy_ind (individual *ind1, individual *ind2)
             ind2->xreal[i] = ind1->xreal[i];
         }
     }
-    if (nbin!=0)
+    /* if (nbin!=0)
     {
         for (i=0; i<nbin; i++)
         {
@@ -46,7 +46,7 @@ void copy_ind (individual *ind1, individual *ind2)
                 ind2->gene[i][j] = ind1->gene[i][j];
             }
         }
-    }
+    } */
     for (i=0; i<nobj; i++)
     {
         ind2->obj[i] = ind1->obj[i];
@@ -57,6 +57,16 @@ void copy_ind (individual *ind1, individual *ind2)
         {
             ind2->constr[i] = ind1->constr[i];
         }
+    }
+    ind2->route_length = ind1->route_length;
+    if (ind1->route_length > 0 && ind1->route != NULL && ind2->route != NULL) {
+        printf("Copying route of length: %d\n", ind1->route_length);
+        printf("Source route: ");
+        for (i = 0; i < ind1->route_length; i++) {
+            ind2->route[i] = ind1->route[i];
+            printf("%d ", ind2->route[i]);
+        }
+        printf("\n");
     }
     return;
 }

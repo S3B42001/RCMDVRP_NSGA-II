@@ -82,8 +82,7 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
         child1_n->route_length = 0;
         child2_n->route_length = 0;
 
-/*         // Copia rutas de los padres a los temporales */
-        printf("Parent1 route: ");
+        /* printf("Parent1 route: ");
         for (i = 0; i < parent1->route_length; i++) {
             printf("%d ", parent1->route[i]);
         }
@@ -91,7 +90,7 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
         for (i = 0; i < parent2->route_length; i++) {
             printf("%d ", parent2->route[i]);
         }
-        printf("\n");
+        printf("\n"); */
         for (i = 0; i < n_customers; i++) {
             if (parent1->route[internal_counter1] > 0) {
                 parent1_n->route[i] = parent1->route[internal_counter1];
@@ -243,7 +242,7 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
             } */
             else
             {
-                /*printf("No crossover performed, copying parent1 to child1 and parent2 to child2\n"); */
+                /* printf("No crossover performed, copying parent1 to child1 and parent2 to child2\n"); */
                 child1->route_length = parent1->route_length;
                 child2->route_length = parent2->route_length;
                 for (i = 0; i < parent1->route_length; i++)
@@ -281,18 +280,19 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
         for (i = 0; i < parent2->route_length; i++)
         child2->route[i] = parent2->route[i];
     }
-    printf("Final child1 route: ");
+    /* printf("Final child1 route: ");
     for (i=0;i < child1->route_length; i++)
     {
         printf("%d ", child1->route[i]);
     }
+    printf("\n");
 
     printf("Final child2 route: ");
     for (i=0;i < child2->route_length; i++)
     {
         printf("%d ", child2->route[i]);
     }
-    printf("\n--- Sinusoidal Motion crossover completed ---\n"); 
+    printf("\n--- Sinusoidal Motion crossover completed ---\n"); */
     return;
 }
 /* Routine for real variable SBX crossover */

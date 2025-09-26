@@ -171,7 +171,7 @@ void readTrucks(FILE *f, problem_instance *pi) {
         }
 
         if (debug) printf("###################################\n");
-        /*if (debug) printf("%s\n", token);*/ /*
+        if (debug) printf("%s\n", token);
         token = strtok(NULL, " ");
         id++;
     }
