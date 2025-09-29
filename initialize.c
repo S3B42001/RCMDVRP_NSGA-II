@@ -98,6 +98,7 @@ void initialize_ind (individual *ind)
             cliente_anterior = clientes[i];
         }
     }
+    ind->route[pos++] = separador;
     ind->route_length = pos;
     printf("\n Individual initialized with %d nodes in route\n", ind->route_length);
     printf("\n Individual route: ");
