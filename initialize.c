@@ -35,7 +35,9 @@ void initialize_ind (individual *ind)
     double riesgo_max = theta;
     int n_veh = 1;
 
-    int cliente_anterior = 0;
+    int n_depositos_usados = 1;
+    int deposito = 1;
+    int cliente_anterior = deposito;
     int separador = -1;
 
     int tmp;
@@ -67,26 +69,41 @@ void initialize_ind (individual *ind)
                 carga = 0;
                 riesgo = 0.0;
                 n_veh++;
+                if (n_veh > n_vehicles) {
+                    deposito = set_O[n_depositos_usados++]; 
+                }
+                cliente_anterior = deposito;
+                i--; 
+                /*
                 if (n_veh > n_vehicles * n_depots) {
                     ind->route[pos++] = separador;
                 }
+                */
+            } else {
+                cliente_anterior = c; 
+                ind->route[pos++] = c;
+                carga += demanda;
+                riesgo += riesgo_cliente;
             }
+            /* cliente_anterior = c; 
             ind->route[pos++] = c;
             carga += demanda;
-            riesgo += riesgo_cliente;
-            cliente_anterior = c; 
+            riesgo += riesgo_cliente; */
         } else {
 /*             ind->constr[0] += dm[clientes[i]];
             ind->constr[2] += 1; */
             ind->route[pos++] = clientes[i];
+            carga += demanda;
+            riesgo += demanda * d[cliente_anterior][clientes[i]];
+            cliente_anterior = clientes[i];
         }
     }
     ind->route_length = pos;
-/*     printf("\n Individual initialized with %d nodes in route\n", ind->route_length);
+    printf("\n Individual initialized with %d nodes in route\n", ind->route_length);
     printf("\n Individual route: ");
     for (i = 0; i < ind->route_length; i++) {
         printf("%d ", ind->route[i]);
     }
-    printf("\n"); */
+    printf("\n");
     return;
 }

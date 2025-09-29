@@ -12,5 +12,5 @@ $(MAIN):$(OBJS)
 	$(CC) $(CFLAGS) -c $<
 .PHONY: clean
 clean:
-	$(RM) *.o *.out
+	$(RM) *.o *.out nsga2r
 
