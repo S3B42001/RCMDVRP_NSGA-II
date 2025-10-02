@@ -38,66 +38,12 @@ void evaluate_pop (population *pop)
     return;
 }
 
-/* Routine to evaluate objective function values and constraints for an individual */
-/*void evaluate_ind (individual *ind)
-{
-    int j;
-    test_problem (ind->xreal, ind->xbin, ind->gene, ind->obj, ind->constr);
-    if (ncon==0)
-    {
-        ind->constr_violation = 0.0;
-    }
-    else
-    {
-        ind->constr_violation = 0.0;
-        for (j=0; j<ncon; j++)
-        {
-            if (ind->constr[j]<0.0)
-            {
-                ind->constr_violation += ind->constr[j];
-            }
-        }
-    }
-    return;
-}*/
-
-
-/* Routine to evaluate objective function values and constraints for an individual */
-/* void evaluate_ind (individual *ind)
-{
-    /*Acá la evaluación completa. Deben setearse los valores de obj y constr_violation. */
-    /*
-    void test_problem (double *xreal, double *xbin, int **gene, double *obj, double *constr)
-    {
-    obj[0] = pow(xreal[0],2.0);
-    obj[1] = pow((xreal[0]-2.0),2.0);
-    return;
-    }
-    
-
-    int j;
-    /*test_problem (ind->xreal, ind->xbin, ind->gene, ind->obj, ind->constr);
-    if (ncon==0)
-    {
-        ind->constr_violation = 0.0;
-    }
-    else
-    {
-        ind->constr_violation = 0.0;
-        for (j=0; j<ncon; j++)
-        {
-            if (ind->constr[j]<0.0)
-            {
-                ind->constr_violation += ind->constr[j];
-            }
-        }
-    }
-    return;
-} */
-
 void evaluate_ind(individual *ind)
 {
     ind->constr_violation = 0.0;
+    ind->constr[0] = 0.0;
+    ind->constr[1] = 0.0;
+    ind->constr[2] = 0.0;
     double total_distance = 0.0;
     double total_emissions = 0.0;
 /*     double constr_viol = 0.0; */
@@ -109,68 +55,81 @@ void evaluate_ind(individual *ind)
     double dist;
     double emission;
 
-    int prev_node = 0;
-    int current_node;
     int depot_counter = 0;
-    int current_depot = set_O[0]; 
+    int current_depot = set_O[depot_counter]; 
+    int prev_node = current_depot;
+    int current_node;
 
     int i;
+
     /* Constraint 1: Capacity
     Constraint 2: risk
     Constraint 3: Vehicles */
+    /* printf("Evaluating individual with route length %d\n", ind->route_length);
+    printf("Route: ");*/
     for (i = 0; i < ind->route_length; i++) {
         current_node = ind->route[i];
+        /* printf("%d ", current_node); */
 
         if (current_node < 0) {
+            /* printf("/   "); */
 
-            total_distance += d[prev_node][0];
-            total_emissions += d[prev_node][0] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot));
-/*             printf("current Total distance: %lf, Total emissions: %lf\n", total_distance, total_emissions); */
-/*             if (current_capacity > b) constr_viol += current_capacity - b;
-            if (current_risk > theta) constr_viol += current_risk - theta;
- */         if (current_capacity > b) ind->constr[0] += current_capacity - b;
-            if (current_risk > theta) ind->constr[1] += current_risk - theta;
+            total_distance += d[prev_node][current_depot];
+            total_emissions += d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot));
+/*            printf("current Total distance: %lf, Total emissions: %lf\n", total_distance, total_emissions); */
+/*            if (current_capacity > b) constr_viol += current_capacity - b;
+            if (current_risk > theta) constr_viol += current_risk - theta; */
+            if (current_capacity > b) {
+                printf("Capacity violation: Current capacity %d exceeds vehicle capacity %d\n", current_capacity, b);
+                ind->constr[0] += current_capacity - b;
+            }
+            if (current_risk > theta) {
+                printf("Risk violation: Current risk %lf exceeds risk threshold %lf\n", current_risk, theta);
+                ind->constr[1] += current_risk - theta;
+            }
 
             current_capacity = 0;
             current_risk = 0.0;
-            prev_node = 0;
+            /* prev_node = 0; */
             current_vehicle++;
             if (current_vehicle >= n_vehicles) {
                 current_depot = set_O[++depot_counter]; 
                 current_vehicle = 0;
             }
-            if (depot_counter >= n_depots) {
+            prev_node = current_depot;
+            if (depot_counter >= n_depots && i + 1 < ind->route_length) {
                 ind->constr[2] += 1;
             }
         } else {
-            demanda = dm[current_node];
             dist = d[prev_node][current_node];
+            demanda = dm[current_node];
             emission = dist * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_node));
 
             total_distance += dist;
-            total_emissions += emission;
             current_capacity += demanda;
+            total_emissions += emission;
             /* current_risk += dist * demanda; */
             current_risk += dist * current_capacity;
 
             prev_node = current_node;
         }
     }
+    /* printf("\n"); */
 
-    if (prev_node != 0) {
-        total_distance += d[prev_node][current_depot];
-        total_emissions += d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot));
-        if (current_capacity > b) ind->constr[0] += current_capacity - b;
-        if (current_risk > theta) ind->constr[1] += current_risk - theta;
-    }
-    ind->constr_violation += ind->constr[0] + ind->constr[1] + ind->constr[2];
+    /*
+        if (prev_node != 0) {
+            total_distance += d[prev_node][current_depot];
+            total_emissions += d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot));
+            if (current_capacity > b) ind->constr[0] += current_capacity - b;
+            if (current_risk > theta) ind->constr[1] += current_risk - theta;
+        }
+    */
+    ind->constr_violation = ind->constr[0] + ind->constr[1] + ind->constr[2];
     
     ind->obj[0] = total_distance;
     ind->obj[1] = total_emissions;
-/* 
-    printf("Total distance: %lf, Total emissions: %lf\n", total_distance, total_emissions);
 
-    ind->constr_violation = constr_viol;
-    printf("Constraint violation: %lf\n", constr_viol); */
+    /* printf("Total distance: %lf, Total emissions: %lf\n", total_distance, total_emissions);
+    printf("Constraint violation: %lf\n", ind->constr_violation); */
 }
 

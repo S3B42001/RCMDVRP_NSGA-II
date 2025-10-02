@@ -10,9 +10,15 @@
 /* Routine to merge two populations into one */
 void merge(population *pop1, population *pop2, population *pop3)
 {
-    int i, k;
+    int i, j, k;
     for (i=0; i<popsize; i++)
     {
+        /* printf("Consolidating individual %d from first population into merged population.\n", i);
+        printf("route length: %d\n", pop1->ind[i].route_length);
+        printf("Source route: ");
+        for (j = 0; j < pop1->ind[i].route_length; j++) {
+            printf("%d ", pop1->ind[i].route[j]);
+        } */
         copy_ind (&(pop1->ind[i]), &(pop3->ind[i]));
     }
     for (i=0, k=popsize; i<popsize; i++, k++)
@@ -36,17 +42,6 @@ void copy_ind (individual *ind1, individual *ind2)
             ind2->xreal[i] = ind1->xreal[i];
         }
     }
-    /* if (nbin!=0)
-    {
-        for (i=0; i<nbin; i++)
-        {
-            ind2->xbin[i] = ind1->xbin[i];
-            for (j=0; j<nbits[i]; j++)
-            {
-                ind2->gene[i][j] = ind1->gene[i][j];
-            }
-        }
-    } */
     for (i=0; i<nobj; i++)
     {
         ind2->obj[i] = ind1->obj[i];
@@ -60,13 +55,15 @@ void copy_ind (individual *ind1, individual *ind2)
     }
     ind2->route_length = ind1->route_length;
     if (ind1->route_length > 0 && ind1->route != NULL && ind2->route != NULL) {
+        /*
         printf("Copying route of length: %d\n", ind1->route_length);
         printf("Source route: ");
+        */
         for (i = 0; i < ind1->route_length; i++) {
             ind2->route[i] = ind1->route[i];
-            printf("%d ", ind2->route[i]);
+            /* printf("%d ", ind2->route[i]); */
         }
-        printf("\n");
+        /* printf("\n"); */
     }
     return;
 }

@@ -36,7 +36,7 @@ void initialize_ind (individual *ind)
     int n_veh = 1;
 
     int n_depositos_usados = 1;
-    int deposito = 1;
+    int deposito = set_O[n_depositos_usados - 1];
     int cliente_anterior = deposito;
     int separador = -1;
 
@@ -62,9 +62,17 @@ void initialize_ind (individual *ind)
         if (n_veh <= (n_vehicles * n_depots)){
             int c = clientes[i];
             int demanda = dm[c];
-            double riesgo_cliente = demanda * d[cliente_anterior][c];
-            if ((carga + demanda > capacidad) || (riesgo + riesgo_cliente > riesgo_max)) {
+            double riesgo_cliente = carga * d[cliente_anterior][c];
+            double riesgo_presente = riesgo + riesgo_cliente;
+            double riesgo_futuro = riesgo_presente + (demanda + carga) * d[c][deposito];
+            /* printf("Cliente %d: %d, Demanda: %d, Carga actual: %d, Carga + Demanda: %d\n", i + 1, c, demanda, carga, carga + demanda);
+            printf("distancia de %d a %d: %lf\n", cliente_anterior, c, d[cliente_anterior][c]);
+            printf("distancia de %d a %d: %lf\n", c, deposito, d[c][deposito]);
+            printf("Riesgo max: %lf, riesgo cliente: %lf, riesgo actual: %lf, Riesgo proximo cliente: %lf, Riesgo cliente a deposito: %lf\n", riesgo_max, riesgo_cliente, riesgo, riesgo_presente, riesgo_futuro); */
+            /* if ((carga + demanda > capacidad) || (riesgo_presente > riesgo_max) || (riesgo_futuro > riesgo_max)) { */
+            if ((carga + demanda > capacidad) || (riesgo_presente > riesgo_max)) {
                 ind->route[pos++] = separador; 
+                /* printf("ruta cerrada con riesgo %lf y carga %d\n", riesgo, carga); */
                 separador -= 1;
                 carga = 0;
                 riesgo = 0.0;
@@ -100,11 +108,11 @@ void initialize_ind (individual *ind)
     }
     ind->route[pos++] = separador;
     ind->route_length = pos;
-    printf("\n Individual initialized with %d nodes in route\n", ind->route_length);
+    /* printf("\n Individual initialized with %d nodes in route\n", ind->route_length);
     printf("\n Individual route: ");
     for (i = 0; i < ind->route_length; i++) {
         printf("%d ", ind->route[i]);
     }
-    printf("\n");
+    printf("\n"); */
     return;
 }
