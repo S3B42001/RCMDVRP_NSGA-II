@@ -46,7 +46,7 @@ int check_dominance (individual *a, individual *b)
         }
         else
         {
-            if (a->constr_violation == 0 && b->constr_violation <0)
+            if (a->constr_violation == 0 && b->constr_violation < 0)
             {
                 return (1);
             }

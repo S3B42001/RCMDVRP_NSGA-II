@@ -29,12 +29,12 @@ void mutation_ind (individual *ind)
 void real_mutate_ind (individual *ind)
 {
     int i, j;
-    printf("Mutating individual with route length %d\n", ind->route_length);
+    /* printf("Mutating individual with route length %d\n", ind->route_length);
     printf("Original individual route: ");
     for (i = 0; i < ind->route_length; i++) {
         printf("%d ", ind->route[i]);
     }
-    printf("\n");
+    printf("\n"); */
 
     if (ind->route_length < 2) return;
 
@@ -64,14 +64,17 @@ void real_mutate_ind (individual *ind)
     int carga = 0;
     double riesgo = 0.0;
     int capacidad = b;
-    double riesgo_max = theta;
+    /* double riesgo_max = theta; */
+    double riesgo_max = theta * 0.95; 
+    printf("Valor de theta: %lf\n", theta);
+    printf("Riesgo maximo permitido: %lf\n", riesgo_max);
     int n_veh = 1;
     int n_depositos_usados = 1;
-    int deposito = 1;
+    int deposito = set_O[n_depositos_usados - 1];
     int cliente_anterior = deposito;
     int separador = -1;
 
-    for (i = 0; i < n_clientes; i++) {
+    /* for (i = 0; i < n_clientes; i++) {
         if (n_veh <= (n_vehicles * n_depots)) {
             int c = clientes[i];
             int demanda = dm[c];
@@ -81,11 +84,12 @@ void real_mutate_ind (individual *ind)
             /* printf("Cliente %d: %d, Demanda: %d, Carga actual: %d, Carga + Demanda: %d\n", i + 1, c, demanda, carga, carga + demanda);
             printf("distancia de %d a %d: %lf\n", cliente_anterior, c, d[cliente_anterior][c]);
             printf("distancia de %d a %d: %lf\n", c, deposito, d[c][deposito]);
-            printf("Riesgo max: %lf, riesgo cliente: %lf, riesgo actual: %lf, Riesgo proximo cliente: %lf, Riesgo cliente a deposito: %lf\n", riesgo_max, riesgo_cliente, riesgo, riesgo_presente, riesgo_futuro);*/
-            /* if ((carga + demanda > capacidad) || (riesgo_presente > riesgo_max) || (riesgo_futuro > riesgo_max)) {*/
-            if ((carga + demanda > capacidad) || (riesgo_presente > riesgo_max)) {
+            printf("Riesgo max: %lf, riesgo cliente: %lf, riesgo actual: %lf, Riesgo proximo cliente: %lf, Riesgo cliente a deposito: %lf\n", riesgo_max, riesgo_cliente, riesgo, riesgo_presente, riesgo_futuro); 
+            if ((carga + demanda > capacidad) || (riesgo_presente > riesgo_max) || (riesgo_futuro > riesgo_max)) {
+            /* if ((carga + demanda > capacidad) || (riesgo_presente > riesgo_max)) { 
                 ind->route[pos++] = separador;
-                /* printf("ruta cerrada con riesgo %lf y carga %d\n", riesgo, carga); */
+                riesgo += carga * d[cliente_anterior][deposito];
+                printf("ruta cerrada con riesgo %lf y carga %d\n", riesgo, carga);
                 separador -= 1;
                 carga = 0;
                 riesgo = 0.0;
@@ -106,10 +110,67 @@ void real_mutate_ind (individual *ind)
             int c = clientes[i];
             int demanda = dm[c];
             ind->route[pos++] = c;
+            riesgo += carga * d[cliente_anterior][c];
             carga += demanda;
-            riesgo += demanda * d[cliente_anterior][c];
             cliente_anterior = c;
         }
+    }
+    if (n_depositos_usados > n_depots) {
+        printf("ruta cerrada con riesgo %lf y carga %d\n", riesgo, carga);
+    }
+    ind->route[pos++] = separador;
+    ind->route_length = pos; */
+    for (i = 0; i < n_customers; i++) {
+        if (n_veh <= (n_vehicles * n_depots)){
+            int c = clientes[i];
+            int demanda = dm[c];
+            double riesgo_cliente = carga * d[cliente_anterior][c];
+            double riesgo_presente = riesgo + riesgo_cliente;
+            double riesgo_futuro = riesgo_presente + (demanda + carga) * d[c][deposito];
+            /* printf("Cliente %d: %d, Demanda: %d, Carga actual: %d, Carga + Demanda: %d\n", i + 1, c, demanda, carga, carga + demanda);
+            printf("distancia de %d a %d: %lf\n", cliente_anterior, c, d[cliente_anterior][c]);
+            printf("distancia de %d a %d: %lf\n", c, deposito, d[c][deposito]);
+            printf("Riesgo max: %lf, riesgo cliente: %lf, riesgo actual: %lf, Riesgo proximo cliente: %lf, Riesgo cliente a deposito: %lf\n", riesgo_max, riesgo_cliente, riesgo, riesgo_presente, riesgo_futuro); */
+            if ((carga + demanda > capacidad) || (riesgo_presente > riesgo_max) || (riesgo_futuro > riesgo_max)) {
+            /* if ((carga + demanda > capacidad) || (riesgo_presente > riesgo_max)) { */
+                ind->route[pos++] = separador;
+                riesgo += carga * d[cliente_anterior][deposito];
+                printf("ruta cerrada con riesgo %lf y carga %d\n", riesgo, carga);
+                separador -= 1;
+                carga = 0;
+                riesgo = 0.0;
+                n_veh++;
+                if (n_veh > n_vehicles) {
+                    deposito = set_O[n_depositos_usados++]; 
+                }
+                cliente_anterior = deposito;
+                i--; 
+                /*
+                if (n_veh > n_vehicles * n_depots) {
+                    ind->route[pos++] = separador;
+                }
+                */
+            } else {
+                cliente_anterior = c; 
+                ind->route[pos++] = c;
+                carga += demanda;
+                riesgo += riesgo_cliente;
+            }
+            /* cliente_anterior = c; 
+            ind->route[pos++] = c;
+            carga += demanda;
+            riesgo += riesgo_cliente; */
+        } else {
+/*             ind->constr[0] += dm[clientes[i]];
+            ind->constr[2] += 1; */
+            ind->route[pos++] = clientes[i];
+            riesgo += carga * d[cliente_anterior][clientes[i]];
+            carga += demanda;
+            cliente_anterior = clientes[i];
+        }
+    }
+    if (n_depositos_usados > n_depots) {
+        printf("ruta cerrada con riesgo %lf y carga %d\n", riesgo, carga);
     }
     ind->route[pos++] = separador;
     ind->route_length = pos;

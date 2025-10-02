@@ -48,15 +48,15 @@ void evaluate_ind(individual *ind)
     double total_emissions = 0.0;
 /*     double constr_viol = 0.0; */
 
-    int current_vehicle = 0;
+    int current_vehicle = 1;
     int current_capacity = 0;
     double current_risk = 0.0;
     
     double dist;
     double emission;
 
-    int depot_counter = 0;
-    int current_depot = set_O[depot_counter]; 
+    int depot_counter = 1;
+    int current_depot = set_O[depot_counter - 1]; 
     int prev_node = current_depot;
     int current_node;
 
@@ -74,17 +74,18 @@ void evaluate_ind(individual *ind)
         if (current_node < 0) {
             /* printf("/   "); */
 
+            current_risk += d[prev_node][current_depot] * current_capacity;
             total_distance += d[prev_node][current_depot];
             total_emissions += d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot));
 /*            printf("current Total distance: %lf, Total emissions: %lf\n", total_distance, total_emissions); */
 /*            if (current_capacity > b) constr_viol += current_capacity - b;
             if (current_risk > theta) constr_viol += current_risk - theta; */
             if (current_capacity > b) {
-                printf("Capacity violation: Current capacity %d exceeds vehicle capacity %d\n", current_capacity, b);
+                /* printf("Capacity violation: Current capacity %d exceeds vehicle capacity %d\n", current_capacity, b); */
                 ind->constr[0] += current_capacity - b;
             }
             if (current_risk > theta) {
-                printf("Risk violation: Current risk %lf exceeds risk threshold %lf\n", current_risk, theta);
+                /* printf("Risk violation: Current risk %lf exceeds risk threshold %lf\n", current_risk, theta); */
                 ind->constr[1] += current_risk - theta;
             }
 
@@ -92,24 +93,27 @@ void evaluate_ind(individual *ind)
             current_risk = 0.0;
             /* prev_node = 0; */
             current_vehicle++;
-            if (current_vehicle >= n_vehicles) {
-                current_depot = set_O[++depot_counter]; 
-                current_vehicle = 0;
+            if (current_vehicle > n_vehicles) {
+                current_depot = set_O[depot_counter++]; 
+                current_vehicle = 1;
             }
             prev_node = current_depot;
-            if (depot_counter >= n_depots && i + 1 < ind->route_length) {
+            /* if (depot_counter > n_depots && i + 1 < ind->route_length) {
+                ind->constr[2] += 1;
+            } */
+        } else {
+            if (depot_counter > n_depots) {
                 ind->constr[2] += 1;
             }
-        } else {
             dist = d[prev_node][current_node];
             demanda = dm[current_node];
             emission = dist * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_node));
 
-            total_distance += dist;
+            current_risk += dist * current_capacity;
             current_capacity += demanda;
+            total_distance += dist;
             total_emissions += emission;
             /* current_risk += dist * demanda; */
-            current_risk += dist * current_capacity;
 
             prev_node = current_node;
         }
