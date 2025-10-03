@@ -34,8 +34,8 @@ void initialize_ind (individual *ind)
     double riesgo = 0.0;
     /* double riesgo_max = theta; */
     double riesgo_max = theta * 0.95;
-    printf("Valor de theta: %lf\n", theta);
-    printf("Riesgo maximo permitido: %lf\n", riesgo_max);
+    /* printf("Valor de theta: %lf\n", theta);
+    printf("Riesgo maximo permitido: %lf\n", riesgo_max); */
     int n_veh = 1;
 
     int n_depositos_usados = 1;
@@ -76,7 +76,7 @@ void initialize_ind (individual *ind)
             /* if ((carga + demanda > capacidad) || (riesgo_presente > riesgo_max)) { */
                 ind->route[pos++] = separador;
                 riesgo += carga * d[cliente_anterior][deposito];
-                printf("ruta cerrada con riesgo %lf y carga %d\n", riesgo, carga);
+                /* printf("ruta cerrada con riesgo %lf y carga %d\n", riesgo, carga); */
                 separador -= 1;
                 carga = 0;
                 riesgo = 0.0;
@@ -110,9 +110,9 @@ void initialize_ind (individual *ind)
             cliente_anterior = clientes[i];
         }
     }
-    if (n_depositos_usados > n_depots) {
+    /* if (n_depositos_usados > n_depots) {
         printf("ruta cerrada con riesgo %lf y carga %d\n", riesgo, carga);
-    }
+    } */
     ind->route[pos++] = separador;
     ind->route_length = pos;
     /* printf("\n Individual initialized with %d nodes in route\n", ind->route_length);

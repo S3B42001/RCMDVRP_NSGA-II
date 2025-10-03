@@ -57,6 +57,7 @@ void evaluate_ind(individual *ind)
 
     int depot_counter = 1;
     int current_depot = set_O[depot_counter - 1]; 
+    printf("Current depot: %d\n", current_depot);
     int prev_node = current_depot;
     int current_node;
 
@@ -65,6 +66,7 @@ void evaluate_ind(individual *ind)
     /* Constraint 1: Capacity
     Constraint 2: risk
     Constraint 3: Vehicles */
+
     /* printf("Evaluating individual with route length %d\n", ind->route_length);
     printf("Route: ");*/
     for (i = 0; i < ind->route_length; i++) {
@@ -73,13 +75,17 @@ void evaluate_ind(individual *ind)
 
         if (current_node < 0) {
             /* printf("/   "); */
+            printf("Previous node: %d\n", prev_node);
+            printf("Current depot: %d\n", current_depot);
 
             current_risk += d[prev_node][current_depot] * current_capacity;
             total_distance += d[prev_node][current_depot];
             total_emissions += d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot));
-/*            printf("current Total distance: %lf, Total emissions: %lf\n", total_distance, total_emissions); */
-/*            if (current_capacity > b) constr_viol += current_capacity - b;
-            if (current_risk > theta) constr_viol += current_risk - theta; */
+            
+            printf("ruta finalizada");
+            printf("(d: %.2lf, e: %.2lf) ", d[prev_node][current_depot], d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot)));
+            printf("Final capacity: %d, Final risk: %lf\n", current_capacity, current_risk);
+
             if (current_capacity > b) {
                 /* printf("Capacity violation: Current capacity %d exceeds vehicle capacity %d\n", current_capacity, b); */
                 ind->constr[0] += current_capacity - b;
@@ -94,7 +100,12 @@ void evaluate_ind(individual *ind)
             /* prev_node = 0; */
             current_vehicle++;
             if (current_vehicle > n_vehicles) {
-                current_depot = set_O[depot_counter++]; 
+                if (set_O[depot_counter + 1] != 0) {
+                    current_depot = set_O[depot_counter++]; 
+                    printf("Switching to depot %d\n", current_depot);
+                } else {
+                    printf("No more depots available, staying at depot %d\n", current_depot);
+                }
                 current_vehicle = 1;
             }
             prev_node = current_depot;
@@ -116,6 +127,9 @@ void evaluate_ind(individual *ind)
             /* current_risk += dist * demanda; */
 
             prev_node = current_node;
+            printf("%d", prev_node);
+            printf("(d: %.2lf, e: %.2lf) ", dist, emission);
+            printf("Current capacity: %d, Current risk: %lf\n", current_capacity, current_risk);
         }
     }
     /* printf("\n"); */
