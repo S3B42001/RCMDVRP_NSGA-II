@@ -103,7 +103,7 @@ if __name__ == "__main__":
     parser.add_argument("input_file", help="Archivo .txt de instancia")
     parser.add_argument("output_file", help="Nombre del archivo .dat de salida")
 
-    args = parser.parse_args(["../Nuevas Instancias/11-2.txt", "Instance11.dat"])
+    args = parser.parse_args(["./Instances/338.txt", "./Instances/Instance338.dat"])
 
     n, risk_threshold, demands, coords = read_instance_txt(args.input_file)
     write_dat_file(n, risk_threshold, demands, coords, args.output_file)
