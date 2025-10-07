@@ -8,10 +8,9 @@ message: >-
   metadata from this file.
 type: software
 authors:
-  - given-names: Sebastián
+  - given-names: Sebastián Andrés
     family-names: Baeza Avello
-    email: sebastian.baezaa@usm.cl
-    affiliation: Universidad Técnica Federico Santa María
+    email: s.andres.b2001@gmail.com
 repository-code: >-
   https://github.com/SebastianBaeza/Proyecto_Algoritmos_Multiobjetivo
 abstract: >-
