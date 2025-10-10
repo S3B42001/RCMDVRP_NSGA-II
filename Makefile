@@ -13,4 +13,6 @@ $(MAIN):$(OBJS)
 .PHONY: clean
 clean:
 	$(RM) *.o *.out nsga2r
-
+clean-all:
+	$(RM) *.o *.out nsga2r
+	$(RM) -r Results_nsga2
