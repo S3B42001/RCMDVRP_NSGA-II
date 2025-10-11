@@ -37,8 +37,8 @@ void crossover (individual *parent1, individual *parent2, individual *child1, in
 /* Routine for real variable SBX crossover */
 void realcross (individual *parent1, individual *parent2, individual *child1, individual *child2)
 {
-/*     printf("\n--- Performing Sinusoidal Motion crossover ---\n"); */
-    int i, j;
+    /* printf("\n--- Performing Sinusoidal Motion crossover ---\n"); */
+    int i;
     individual *parent1_n;
     individual *parent2_n;
     individual *child1_n;
@@ -49,16 +49,6 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
     int counter;
     int internal_counter1 = 0;
     int internal_counter2 = 0;
-
-    int carga = 0;
-    double riesgo = 0.0;
-    int capacidad = b; 
-    double riesgo_max = theta;
-    int child_route_pos = 0;
-    separador = -1;
-    int cliente_anterior = 0;
-    int demanda;
-    int n_veh;
 
     if (randomperc() <= pcross_real)
     {
@@ -99,32 +89,17 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
             }
             internal_counter2++;
         }
-/* 
-        printf("Parent1_n route: ");
-        for (i = 0; i < n_customers; i++) printf("%d ", parent1_n->route[i]);
-        printf("\nParent2_n route: ");
-        for (i = 0; i < n_customers; i++) printf("%d ", parent2_n->route[i]);
-        printf("\n"); */
-
-/*         // Inicializa rutas de hijos temporales a un valor inválido */
-/*         for (i = 0; i < n_customers; i++) {
-            child1_n->route[i] = -9999;
-            child2_n->route[i] = -9999;
-        } */
 
         for (i=0; i<nreal; i++)
         {
             if (randomperc()<=0.5 )
-            /* if (randomperc()<=1.0) */
             {
                 for (counter = 0; counter < n_customers; counter++)
                 {
-                    /* printf("child1_n->route_length: %d, child2_n->route_length: %d\n", child1_n->route_length, child2_n->route_length); */
                     if (child1_n->route_length >= MAX_NODES || child2_n->route_length >= MAX_NODES) {
                         printf("Error: Child route length exceeds maximum nodes.\n");
                         exit(1);
                     }
-                    /* printf("counter=%d, parent1_n->route[counter]=%d, parent2_n->route[counter]=%d\n", counter, parent1_n->route[counter], parent2_n->route[counter]); */
                     if (valueinarray(parent1_n->route[counter],child1_n->route, child1_n->route_length) == 1){
                         child2_n->route[indice2] = parent1_n->route[counter];
                         child2_n->route_length++;
@@ -161,72 +136,6 @@ void realcross (individual *parent1, individual *parent2, individual *child1, in
                     child2->route[i] = child2_n->route[i];
                 }
                 child2->route_length = child2_n->route_length;
-/*
-                child1->route_length = 0;
-                child_route_pos = 0;
-                carga = 0;
-                riesgo = 0.0;
-                cliente_anterior = 0;
-                separador = -1;
-                n_veh = 1;
-
-                for (j = 0; j < n_customers; j++) {
-                    if (n_veh < n_vehicles){
-
-                        cliente = child1_n->route[j];
-                        demanda = dm[cliente];
-
-                        if (carga + demanda > capacidad || riesgo + demanda * d[cliente_anterior][cliente] > riesgo_max) {
-                            child1->route[child_route_pos++] = separador;
-                            separador -= 1; 
-                            child1->route_length++;
-                            carga = 0; 
-                            riesgo = 0.0; 
-                            n_veh++;
-                            if (n_veh > n_vehicles) {
-                                child1->route[child_route_pos++] = separador;
-                            }
-                        }
-
-                        child1->route[child_route_pos++] = cliente;
-                        riesgo += demanda * d[cliente_anterior][cliente];
-                        child1->route_length++;
-                        carga += demanda;
-                        cliente_anterior = cliente; 
-                    } else {
-                        child1->constr[0] += dm[child1_n->route[j]];
-                        child1->route[child_route_pos++] = child1_n->route[j];
-                        child1->route_length++;
-                    }
-                }
-
-                carga = 0;
-                riesgo = 0.0;
-                child_route_pos = 0;
-                child2->route_length = 0;
-                separador = -1;
-                cliente_anterior = 0;
-                
-                for (j = 0; j < n_customers; j++) {
-                    cliente = child2_n->route[j];
-                    demanda = dm[cliente];
-
-                    if (carga + demanda > capacidad || riesgo + demanda * d[cliente_anterior][cliente] > riesgo_max) 
-                    {
-                        child2->route[child_route_pos++] = separador;
-                        separador -= 1;
-                        child2->route_length++;
-                        carga = 0;
-                        riesgo = 0.0;
-                    }
-
-                    child2->route[child_route_pos++] = cliente;
-                    riesgo += demanda * d[cliente_anterior][cliente];
-                    child2->route_length++;
-                    carga += demanda;
-                    cliente_anterior = cliente; 
-                }
-                */
             }
             else
             {

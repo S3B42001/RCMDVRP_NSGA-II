@@ -9,8 +9,8 @@
 # define PI 3.14159265358979
 # define GNUPLOT_COMMAND "gnuplot -persist"
 
-#define MAX_NODES 100
-#define MAX_VEHICLES 10
+#define MAX_NODES 500
+#define MAX_VEHICLES 100
 
 typedef struct
 {
