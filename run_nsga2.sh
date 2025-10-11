@@ -4,12 +4,13 @@ mkdir -p Results_nsga2
 
 # Lista de instancias
 # INSTANCIAS=(11 20 26 38 53 65 80 95 126 146 210 338)
-INSTANCIAS=(11 20 26 38 53 65 80)
-# INSTANCIAS=(95 126 146 210 338)
+# INSTANCIAS=(11 20 26 38 53 65 80)
+INSTANCIAS=(95 126 146 210 338)
 
 for i in "${INSTANCIAS[@]}"; do
-    # Generar número aleatorio entre 0 y 1 con 9 decimales
-    RAND=$(awk -v seed=$RANDOM 'BEGIN { srand(seed); printf("%.9f\n", rand()) }')
+    # Generar número aleatorio entre 0 y 1 con 9 decimales usando /dev/urandom
+    # Tomamos 6 bytes de /dev/urandom, los convertimos a entero y los normalizamos a (0,1)
+    RAND=$(od -An -N6 -tu8 /dev/urandom | tr -d ' ' | awk '{printf("%.9f", ($1 / 281474976710656))}')
 
     echo "Ejecutando instancia $i con semilla $RAND"
 
