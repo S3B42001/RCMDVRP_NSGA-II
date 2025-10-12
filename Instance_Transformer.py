@@ -38,8 +38,12 @@ def write_dat_file(n, risk_threshold, demands, coords, output_filename):
 
     dat.append(f"\nset O := {' '.join(map(str, depot_indices))};")
     dat.append(f"set R := {' '.join(map(str, client_indices))};")
-    dat.append(f"set S := {' '.join(map(str, depot_indices))};")
-    dat.append(f"set K := {' '.join(map(str, range(1, num_vehiculos + 1)))};")
+    # Hacer negativos los índices de depósito
+    neg_depot_indices = [-i for i in depot_indices]
+    dat.append(f"set S := {' '.join(map(str, neg_depot_indices))};")
+    dat.append(f"set K := {' '.join(map(str, range(1, (num_vehiculos * len(client_indices)) + 1)))};")
+    # dat.append(f"set S := {' '.join(map(str, depot_indices))};")
+    # dat.append(f"set K := {' '.join(map(str, range(1, num_vehiculos + 1)))};")
 
     # Parámetros clave
     dat.append(f"param b := {capacidad};")
@@ -83,12 +87,6 @@ def write_dat_file(n, risk_threshold, demands, coords, output_filename):
             dat.append(f"{o} {k} 0")
     dat.append(";")
 
-    # Emisiones simplificadas
-    dat.append("param f :=")
-    for i in range(1, 5):
-        dat.append(f"{i} {i}")
-    dat.append(";")
-
     # Guardar archivo
     with open(output_filename, 'w') as f:
         f.write('\n'.join(dat))
@@ -103,7 +101,7 @@ if __name__ == "__main__":
     parser.add_argument("input_file", help="Archivo .txt de instancia")
     parser.add_argument("output_file", help="Nombre del archivo .dat de salida")
 
-    args = parser.parse_args(["./Instances/338.txt", "./Instances/Instance338.dat"])
+    args = parser.parse_args(["./Instances/11.txt", "./Instances/Instance11c.dat"])
 
     n, risk_threshold, demands, coords = read_instance_txt(args.input_file)
     write_dat_file(n, risk_threshold, demands, coords, args.output_file)
