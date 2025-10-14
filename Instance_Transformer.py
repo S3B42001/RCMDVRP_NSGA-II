@@ -94,14 +94,18 @@ def write_dat_file(n, risk_threshold, demands, coords, output_filename):
     print(f"Archivo '{output_filename}' generado correctamente.")
 
 # ---------------------- USO -----------------------
+
 if __name__ == "__main__":
     import argparse
+    instancias = [11, 20, 26, 38, 53, 65, 80, 95, 126, 146, 210, 338]
 
     parser = argparse.ArgumentParser(description="Convertidor de instancias TXT a archivo .dat para RCMDVRP")
     parser.add_argument("input_file", help="Archivo .txt de instancia")
     parser.add_argument("output_file", help="Nombre del archivo .dat de salida")
 
-    args = parser.parse_args(["./Instances/11.txt", "./Instances/Instance11c.dat"])
+    for i in instancias:
+        original = f"./Instances/{i}.txt"
+        args = parser.parse_args([original, f"./Instances/Instance{i}.dat"])
 
-    n, risk_threshold, demands, coords = read_instance_txt(args.input_file)
-    write_dat_file(n, risk_threshold, demands, coords, args.output_file)
+        n, risk_threshold, demands, coords = read_instance_txt(args.input_file)
+        write_dat_file(n, risk_threshold, demands, coords, args.output_file)
