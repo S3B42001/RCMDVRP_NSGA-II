@@ -54,7 +54,7 @@ void read_dat_file(const char *filename) {
                 fgets(line, sizeof(line), file);
                 if (strchr(line, ';')) break;
                 sscanf(line, "%d %lf %lf", &idx, &sigma[i][0], &sigma[i][1]);
-         /*        printf("sigma[0][0]: %lf, sigma[0][1]: %lf\n", sigma[0][0], sigma[0][1]); */
+                /* printf("sigma[%d][0]: %lf, sigma[%d][1]: %lf\n", i, sigma[i][0], i, sigma[i][1]); */
             }
         }
 
@@ -117,14 +117,14 @@ void read_dat_file(const char *filename) {
             n_vehicles = n_vehicles / n_depots;
         }
 
-        else if (strncmp(line, "param b", 7) == 0) {
+        else if (strncmp(line, "param b := ", 11) == 0) {
             sscanf(line, "param b := %d", &b);
-         /*    printf("b: %d\n", b); */
+            /* printf("b: %d\n", b); */
         }
 
         else if (strncmp(line, "param theta", 11) == 0) {
             sscanf(line, "param theta := %lf", &theta);
-         /*    printf("theta: %lf\n", theta); */
+            /* printf("theta: %lf\n", theta); */
         }
 
         else if (strncmp(line, "param peso_vacio", 16) == 0) {
@@ -137,7 +137,7 @@ void read_dat_file(const char *filename) {
                 fgets(line, sizeof(line), file);
                 if (strchr(line, ';')) break;
                 sscanf(line, "%d %lf", &idx, &alpha[i]);
-               /*  printf("alpha[%d]: %lf\n", idx, alpha[i]); */
+               /* printf("alpha[%d]: %lf\n", idx, alpha[i]); */
             }
         }
 
@@ -155,7 +155,7 @@ void read_dat_file(const char *filename) {
                 fgets(line, sizeof(line), file);
                 if (strchr(line, ';')) break;
                 sscanf(line, "%d %lf", &idx, &gamma_param[i]);
-               /*  printf("gamma_param[%d]: %lf\n", idx, gamma_param[i]); */
+                /* printf("gamma_param[%d]: %lf\n", idx, gamma_param[i]); */
             }
         }
 
@@ -195,7 +195,7 @@ void read_dat_file(const char *filename) {
             }
         }
 
-        else if (strncmp(line, "param dm", 8) == 0) {
+        else if (strncmp(line, "param dm :=", 11) == 0) {
             while (fgets(line, sizeof(line), file)) {
                 if (strchr(line, ';')) break;
                 if (sscanf(line, "%d %d", &i, &j) == 2){
@@ -205,7 +205,7 @@ void read_dat_file(const char *filename) {
             }
         }
 
-        else if (strncmp(line, "param d", 7) == 0) {
+        else if (strncmp(line, "param d :=", 10) == 0) {
             while (fgets(line, sizeof(line), file)) {
                 if (strchr(line, ';')) break;
                 if (sscanf(line, "%d %d %lf", &i, &j, &val) == 3){
@@ -248,7 +248,7 @@ void read_dat_file(const char *filename) {
 
 
 int readInputFile(char* filePath) {
-    int debug=0;
+    int debug = 0;
     FILE* fh=fopen(filePath, "r");
 
     /*check if file exists*/

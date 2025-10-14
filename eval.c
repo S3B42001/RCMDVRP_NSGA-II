@@ -16,17 +16,19 @@ double compute_emission(int i, int j)
 
     double f = 0.0;
     int l;
-    for (l = 1; l < 5; l++) {
+    for (l = 0; l < 5; l++) {
+        /* printf("Calculando f para arco %d -> %d con velocidad %lf y parámetros alpha[%d]=%lf, beta[%d]=%lf, gamma_param[%d]=%lf, delta_param[%d]=%lf, epsilon[%d]=%lf, zeta[%d]=%lf, hta[%d]=%lf\n", i, j, s, l, alpha[l], l, beta[l], l, gamma_param[l], l, delta_param[l], l, epsilon[l], l, zeta[l], l, hta[l]); */
         f += ((alpha[l] * pow(s, 2)) + (beta[l] * s) + (gamma_param[l]) + (delta_param[l] / s))/((epsilon[l] * pow(s, 2)) + (zeta[l] * s) + (hta[l]));
         /* printf("f calculado: %lf\n", f); */
     }
+    /* printf("f final para arco %d -> %d: %lf\n", i, j, f); */
     return f;
 }
 
 /* Routine to evaluate objective function values and constraints for a population */
 void evaluate_pop (population *pop)
 {
-    printf("\n--- Evaluating population ---\n");
+    /* ("\n--- Evaluating population ---\n"); */
     int i;
     for (i=0; i<popsize; i++)
     {
@@ -49,7 +51,9 @@ void evaluate_ind(individual *ind)
     double current_risk = 0.0;
     
     double dist;
+    double curr_dist;
     double emission;
+    double curr_emission;
 
     int depot_counter = 1;
     int current_depot = set_O[depot_counter - 1]; 
@@ -71,9 +75,26 @@ void evaluate_ind(individual *ind)
         if (current_node < 0) {
             /* printf("/   "); */
 
+            /* ("Ruta finalizada: %d -> %d\n", prev_node, current_depot);
+            printf("Capacidad actual: %d\n", current_capacity);
+            printf("Distancia hacia depósito: %lf\n", d[prev_node][current_depot]);
+
+            printf("\n"); */
+            emission = d[prev_node][current_depot] * compute_emission(prev_node, current_depot);
+            curr_dist += d[prev_node][current_depot];
+            curr_emission += emission;
+
+            /* printf("Distancia de %d a %d: %lf\n", prev_node, current_depot, d[prev_node][current_depot]);
+            printf("Emisión de %d a %d: %lf\n\n", prev_node, current_depot, emission); */
+
             current_risk += d[prev_node][current_depot] * current_capacity;
             total_distance += d[prev_node][current_depot];
-            total_emissions += d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot));
+            /* total_emissions += d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot)); */
+            total_emissions += emission;
+
+            /* printf("Distancia de la ruta: %lf\n", curr_dist);
+            printf("Emisión de la ruta: %lf\n", curr_emission);
+            printf("\n"); */
             
             /* printf("ruta finalizada"); */
 
@@ -85,6 +106,9 @@ void evaluate_ind(individual *ind)
                 /* printf("Risk violation: Current risk %lf exceeds risk threshold %lf\n", current_risk, theta); */
                 ind->constr[1] += current_risk - theta;
             }
+
+            curr_dist = 0.0;
+            curr_emission = 0.0;
 
             current_capacity = 0;
             current_risk = 0.0;
@@ -102,7 +126,18 @@ void evaluate_ind(individual *ind)
             }
             dist = d[prev_node][current_node];
             demanda = dm[current_node];
-            emission = dist * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_node));
+            /* printf("Nodo actual: %d\n", prev_node);
+            printf("Nodo objetivo: %d\n", current_node); 
+            printf("Demanda de %d: %d\n", current_node, demanda); */
+            
+            /* emission = dist * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_node)); */
+
+            emission = dist * (compute_emission(prev_node, current_node));
+            /* printf("Distancia de %d a %d: %lf\n", prev_node, current_node, dist);
+            printf("Emisión de %d a %d: %lf\n", prev_node, current_node, emission); */
+            
+            curr_dist += dist;
+            curr_emission += emission;
 
             current_risk += dist * current_capacity;
             current_capacity += demanda;
