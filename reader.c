@@ -112,6 +112,9 @@ void read_dat_file(const char *filename) {
                 set_K[n_vehicles++] = atoi(token);
                 token = strtok(NULL, " \t\n\r");
             }
+
+            /*Corregir numero de vehículos*/
+            n_vehicles = n_vehicles / n_depots;
         }
 
         else if (strncmp(line, "param b", 7) == 0) {

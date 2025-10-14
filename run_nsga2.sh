@@ -15,7 +15,7 @@ for i in "${INSTANCIAS[@]}"; do
     echo "Ejecutando instancia $i con semilla $RAND"
 
     # Ejecutar el programa
-    ./nsga2r "$RAND" "Instances/Instance${i}.dat" 100 100 2 0.6 0.1
+    ./nsga2r "$RAND" "Instances/Instance${i}b.dat" 100 100 2 0.6 0.1
 
     # Renombrar/mover los archivos de salida
     mv initial_pop.out "Results_nsga2/initial_pop_Instance${i}.out"

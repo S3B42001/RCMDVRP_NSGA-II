@@ -41,7 +41,7 @@ def write_dat_file(n, risk_threshold, demands, coords, output_filename):
     # Hacer negativos los índices de depósito
     neg_depot_indices = [-i for i in depot_indices]
     dat.append(f"set S := {' '.join(map(str, neg_depot_indices))};")
-    dat.append(f"set K := {' '.join(map(str, range(1, (num_vehiculos * len(client_indices)) + 1)))};")
+    dat.append(f"set K := {' '.join(map(str, range(1, (num_vehiculos * len(depot_indices)) + 1)))};")
     # dat.append(f"set S := {' '.join(map(str, depot_indices))};")
     # dat.append(f"set K := {' '.join(map(str, range(1, num_vehiculos + 1)))};")
 
@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     for i in instancias:
         original = f"./Instances/{i}.txt"
-        args = parser.parse_args([original, f"./Instances/Instance{i}.dat"])
+        args = parser.parse_args([original, f"./Instances/Instance{i}b.dat"])
 
         n, risk_threshold, demands, coords = read_instance_txt(args.input_file)
         write_dat_file(n, risk_threshold, demands, coords, args.output_file)
