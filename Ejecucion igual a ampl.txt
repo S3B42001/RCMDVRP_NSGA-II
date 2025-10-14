@@ -1,0 +1,1 @@
+./nsga2r 0.598567486 Instances/Instance11b.dat 100 100 2 0.6 0.1
