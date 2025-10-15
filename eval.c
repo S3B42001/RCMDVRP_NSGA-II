@@ -56,7 +56,7 @@ void evaluate_ind(individual *ind)
     double curr_emission;
 
     int depot_counter = 1;
-    int current_depot = set_O[depot_counter - 1]; 
+    int current_depot = set_O[0]; 
 
     int prev_node = current_depot;
     int current_node;
@@ -84,17 +84,11 @@ void evaluate_ind(individual *ind)
             curr_dist += d[prev_node][current_depot];
             curr_emission += emission;
 
-            /* printf("Distancia de %d a %d: %lf\n", prev_node, current_depot, d[prev_node][current_depot]);
-            printf("Emisión de %d a %d: %lf\n\n", prev_node, current_depot, emission); */
-
             current_risk += d[prev_node][current_depot] * current_capacity;
             total_distance += d[prev_node][current_depot];
             /* total_emissions += d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot)); */
             total_emissions += emission;
 
-            /* printf("Distancia de la ruta: %lf\n", curr_dist);
-            printf("Emisión de la ruta: %lf\n", curr_emission);
-            printf("\n"); */
             
             /* printf("ruta finalizada"); */
 
@@ -114,8 +108,9 @@ void evaluate_ind(individual *ind)
             current_risk = 0.0;
             current_vehicle++;
             if (current_vehicle > n_vehicles) {
-                if (set_O[depot_counter + 1] != 0) {
-                    current_depot = set_O[depot_counter++]; 
+                if (depot_counter < n_depots) {
+                    current_depot = set_O[depot_counter];
+                    depot_counter++;
                 }
                 current_vehicle = 1;
             }
@@ -126,15 +121,10 @@ void evaluate_ind(individual *ind)
             }
             dist = d[prev_node][current_node];
             demanda = dm[current_node];
-            /* printf("Nodo actual: %d\n", prev_node);
-            printf("Nodo objetivo: %d\n", current_node); 
-            printf("Demanda de %d: %d\n", current_node, demanda); */
-            
+
             /* emission = dist * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_node)); */
 
             emission = dist * (compute_emission(prev_node, current_node));
-            /* printf("Distancia de %d a %d: %lf\n", prev_node, current_node, dist);
-            printf("Emisión de %d a %d: %lf\n", prev_node, current_node, emission); */
             
             curr_dist += dist;
             curr_emission += emission;
@@ -149,8 +139,6 @@ void evaluate_ind(individual *ind)
             /* printf("%d", prev_node); */
         }
     }
-    /* printf("\n"); */
-
     ind->constr_violation = ind->constr[0] + ind->constr[1] + ind->constr[2];
     
     ind->obj[0] = total_distance;
