@@ -48,7 +48,7 @@ def write_dat_file(n, risk_threshold, demands, coords, output_filename):
     # Parámetros clave
     dat.append(f"param b := {capacidad};")
     dat.append(f"param theta := {risk_threshold};")
-    dat.append("param peso_vacio := 3500;")
+    # dat.append("param peso_vacio := 3500;")
 
     # Coeficientes de emisiones (COPERT)
     dat.append("param alpha :=\n0 0\n1 0\n2 0\n3 0\n4 0\n;")
@@ -81,11 +81,11 @@ def write_dat_file(n, risk_threshold, demands, coords, output_filename):
             dat.append(f"{i+1} {j+1} {v}")
     dat.append(";")
 
-    dat.append("param Rinit :=")
-    for o in depot_indices:
-        for k in range(1, num_vehiculos + 1):
-            dat.append(f"{o} {k} 0")
-    dat.append(";")
+    # dat.append("param Rinit :=")
+    # for o in depot_indices:
+    #     for k in range(1, num_vehiculos + 1):
+    #         dat.append(f"{o} {k} 0")
+    # dat.append(";")
 
     # Guardar archivo
     with open(output_filename, 'w') as f:

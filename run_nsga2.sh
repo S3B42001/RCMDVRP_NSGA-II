@@ -3,9 +3,8 @@
 mkdir -p Results_nsga2
 
 # Lista de instancias
-INSTANCIAS=(11 20 26 38 53 65 80 95 126 146 210 338)
-# INSTANCIAS=(11 20 26 38 53 65 80)
-# INSTANCIAS=(95 126 146 210 338)
+# INSTANCIAS=(11 20 26 38 53 65 80 95 126 146 210 338)
+INSTANCIAS=(11 20 26 126 146)
 
 for i in "${INSTANCIAS[@]}"; do
     # Generar número aleatorio entre 0 y 1 con 9 decimales usando /dev/urandom
