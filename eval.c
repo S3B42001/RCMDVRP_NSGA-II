@@ -9,13 +9,15 @@
 
 double compute_emission(int i, int j)
 {
-    double s = v[i][j];
+    double s, f;
+    int l;
+
+    s = v[i][j];
     if (s == 0) {
         return 0.0; 
     }
+    f = 0.0;
 
-    double f = 0.0;
-    int l;
     for (l = 0; l < 5; l++) {
         /* printf("Calculando f para arco %d -> %d con velocidad %lf y parámetros alpha[%d]=%lf, beta[%d]=%lf, gamma_param[%d]=%lf, delta_param[%d]=%lf, epsilon[%d]=%lf, zeta[%d]=%lf, hta[%d]=%lf\n", i, j, s, l, alpha[l], l, beta[l], l, gamma_param[l], l, delta_param[l], l, epsilon[l], l, zeta[l], l, hta[l]); */
         f += ((alpha[l] * pow(s, 2)) + (beta[l] * s) + (gamma_param[l]) + (delta_param[l] / s))/((epsilon[l] * pow(s, 2)) + (zeta[l] * s) + (hta[l]));
@@ -43,17 +45,12 @@ void evaluate_ind(individual *ind)
     ind->constr[0] = 0.0;
     ind->constr[1] = 0.0;
     ind->constr[2] = 0.0;
-    double total_distance = 0.0;
-    double total_emissions = 0.0;
+    double total_distance, total_emissions, current_risk;
 
     int current_vehicle = 1;
     int current_capacity = 0;
-    double current_risk = 0.0;
-    
-    double dist;
-    double curr_dist;
-    double emission;
-    double curr_emission;
+
+    double dist, curr_dist, emission, curr_emission;
 
     int depot_counter = 1;
     int current_depot = set_O[0]; 
@@ -68,6 +65,12 @@ void evaluate_ind(individual *ind)
     Constraint 3: Vehicles */
 
     /* printf("Route: ");*/
+    total_distance = 0.0;
+    total_emissions = 0.0;
+    current_risk = 0.0;
+    curr_dist = 0.0;
+    curr_emission = 0.0;
+
     for (i = 0; i < ind->route_length; i++) {
         current_node = ind->route[i];
         /* printf("%d ", current_node); */
@@ -85,9 +88,11 @@ void evaluate_ind(individual *ind)
             curr_emission += emission;
 
             current_risk += d[prev_node][current_depot] * current_capacity;
-            total_distance += d[prev_node][current_depot];
+            /* total_distance += d[prev_node][current_depot]; */
+            total_distance += curr_dist;
             /* total_emissions += d[prev_node][current_depot] * ((peso_vacio + current_capacity) + compute_emission(prev_node, current_depot)); */
-            total_emissions += emission;
+            /* total_emissions += emission; */
+            total_emissions += curr_emission;
 
             
             /* printf("ruta finalizada"); */
@@ -131,8 +136,8 @@ void evaluate_ind(individual *ind)
 
             current_risk += dist * current_capacity;
             current_capacity += demanda;
-            total_distance += dist;
-            total_emissions += emission;
+            /* total_distance += dist; */
+            /* total_emissions += emission; */
 
 
             prev_node = current_node;
