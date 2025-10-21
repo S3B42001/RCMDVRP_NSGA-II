@@ -1,4 +1,4 @@
-Instance11b.dat	460033	70.0 	4.0
+Instance11b.dat	460033	72.0 	4.0
 Instance20b.dat	460033	80.0	4.75
 Instance26b.dat	460033	120.0	7.0
 Instance38b.dat	460033	400.0	25.0

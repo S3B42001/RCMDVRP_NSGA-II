@@ -1,12 +1,13 @@
-Instance11.dat		30.19 	1.29
-Instance20.dat		36.83	1.6
-Instance26.dat		56.25	2.58
-Instance38.dat		178.81	9.15
-Instance53.dat		528.71	25.22
-Instance65.dat		839.37	42.01
-Instance80.dat		588.95	28.08
-Instance95.dat		1605.8	79.07
-Instance126.dat		2473.82	128.75
-Instance146.dat		861.51	44.43
-Instance210.dat		2220.05	112.83
-Instance338.dat		6215.6	326.48
+Instance11.dat		24.98	1.16
+Instance20.dat		35.6	1.58
+Instance26.dat		47.11	2.41
+Instance38.dat		199.56	9.98
+Instance53.dat		553.51	25.91
+Instance65.dat		854.53	41.76
+Instance80.dat		586.52	27.53
+Instance95.dat		1668.9	81.27
+Instance126.dat		2563.73	124.63
+Instance146.dat		913.89	46.35
+Instance210.dat		2112.38	107.15
+Instance338.dat		6218.39	319.4
+

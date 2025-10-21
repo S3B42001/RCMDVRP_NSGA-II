@@ -47,16 +47,16 @@ def graficar_final_pop(soluciones, titulo="Frente de Pareto", archivo_salida="Pa
 if __name__ == "__main__":
     Instances = [11, 20, 26, 38, 53, 65, 80, 95, 126, 146, 210, 338]
     for Instance in Instances:
-        archivo_Final = "./Results_nsga2/final_pop_Instance" + str(Instance) + ".out"
-        soluciones_Final = leer_final_pop(archivo_Final)
-        if soluciones_Final.size > 0:
-            graficar_final_pop(soluciones_Final, titulo="Soluciones - Instancia " + str(Instance), archivo_salida="./Frentes_Pareto/Soluciones_Instancia" + str(Instance) + ".png")
-        else:
-            print("⚠ No se encontraron soluciones en el archivo.")
-
-        # archivo_Best = "./Results_nsga2/best_pop_Instance" + str(Instance) + ".out"
-        # soluciones_Best = leer_final_pop(archivo_Best)
-        # if soluciones_Best.size > 0:
-        #     graficar_final_pop(soluciones_Best, titulo="Frente de Pareto - Instancia " + str(Instance), archivo_salida="./Frentes_Pareto/Pareto_Instancia" + str(Instance) + ".png")
+        # archivo_Final = "./Results_nsga2/final_pop_Instance" + str(Instance) + ".out"
+        # soluciones_Final = leer_final_pop(archivo_Final)
+        # if soluciones_Final.size > 0:
+        #     graficar_final_pop(soluciones_Final, titulo="Soluciones - Instancia " + str(Instance), archivo_salida="./Frentes_Pareto/Soluciones_Instancia" + str(Instance) + ".png")
         # else:
         #     print("⚠ No se encontraron soluciones en el archivo.")
+
+        archivo_Best = "./Results_nsga2/best_pop_Instance" + str(Instance) + ".out"
+        soluciones_Best = leer_final_pop(archivo_Best)
+        if soluciones_Best.size > 0:
+            graficar_final_pop(soluciones_Best, titulo="Frente de Pareto - Instancia " + str(Instance), archivo_salida="./Frentes_Pareto/Pareto_Instancia" + str(Instance) + ".png")
+        else:
+            print("⚠ No se encontraron soluciones en el archivo.")
