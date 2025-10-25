@@ -17,8 +17,8 @@ set O := 1 11;
 set R := 2 3 4 5 6 7 8 9 10;
 set S := -1 -11;
 set K := 1 2 3 4;
-param b := 11.00;
-param theta := 27.5;
+param b := 10.00;
+param theta := 50.0;
 param peso_vacio := 3500;
 param alpha :=
 0 0

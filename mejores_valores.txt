@@ -1,0 +1,3 @@
+# Mejores valores por objetivo
+MV[1] = 24.980000
+MV[2] = 0.958505

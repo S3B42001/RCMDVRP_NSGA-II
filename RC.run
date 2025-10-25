@@ -1,0 +1,193 @@
+reset;
+
+model RC2.mod;
+data Instance11b.dat;
+#data Instance20.dat;
+
+option solver "gurobi";
+option gurobi_options 'timelim = 3600';
+# option gurobi_options 'timelim = 300';
+option show_stats 1;
+option solver_msg 1;
+
+for {i in O, j in R}{
+    let d[j,-i] := d[i,j];
+    let v[j,-i] := v[j,i];
+}
+
+param vehiculospordeposito := card(K)/card(O) ;
+param vehiculo default 1 ;
+for {i in O}{
+    for {j in {1..vehiculospordeposito}}{
+        let habilitado[i,vehiculo] := 1 ;
+        let vehiculo := vehiculo + 1 ;
+    }
+}
+
+display {i in O, k in K} habilitado[i,k] ;
+
+display d ;
+
+display A ;
+
+display v ;
+
+printf "\n=========== FASE 1: Mejor valor por objetivo ===========\n";
+
+for {o in objetivos} {
+    let g := o;
+    solve FO1;
+    let MV[o] := F[o];
+    printf "MV[%d] (Mejor valor para obj %d): %f\n", o, o, MV[o];
+    printf"------------------------------\n" > "resultados.txt";
+    for {i in N, j in N, k in K: (i,j) in A and x[i,j,k] > 0.9} {
+        printf "Vehiculo %s: %s -> %s\n", k, i, j > "resultados.txt";
+    }
+    for {i in N, j in N, k in K: (i,j) in A and x[i,j,k] > 0.9} {
+        printf "%s : D = %s, R= %s\n", i, D[i,k], Ri[i,k] > "resultados.txt";
+    }
+    for {i in N, j in S, k in K: (i,j) in A and x[i,j,k] > 0.9} {
+        printf "%s : D = %s, R= %s\n", j, D[j,k], Ri[j,k] > "resultados.txt";
+    }
+    for{(i,j) in A, k in K: x[i,j,k] > 0.9}{
+        printf "(%s,%s)\n", i, j > "resultados.txt";
+        for{l in 0..4}{
+            printf "l: %s, d[i,j]:%s, v[i,j]:%s, alpha[l]*v[i,j]^2: %s, beta[l]*v[i,j]: %s, gamma[l]: %s, delta[l]/v[i,j]: %s, epsilon[l]*v[i,j]^2: %s,  zeta[l]*v[i,j]: %s, hta[l]: %s\n", l, d[i,j], v[i,j], alpha[l]*v[i,j]^2, beta[l]*v[i,j], gamma[l], delta[l]/v[i,j], epsilon[l]*v[i,j]^2, zeta[l]*v[i,j], hta[l] > "resultados.txt";
+            printf "numerador:%s, denominador: %s, resultado:%s\n",(alpha[l]*v[i,j]^2 + beta[l]*v[i,j] + gamma[l] + delta[l]/v[i,j]), (epsilon[l]*v[i,j]^2 + zeta[l]*v[i,j] + hta[l]),  ((alpha[l]*v[i,j]^2 + beta[l]*v[i,j] + gamma[l] + delta[l]/v[i,j]) /
+             (epsilon[l]*v[i,j]^2 + zeta[l]*v[i,j] + hta[l])) > "resultados.txt";
+            }
+        printf "sum %s\n\n", sum{l in 0..4}
+            d[i,j] *
+            ((alpha[l]*v[i,j]^2 + beta[l]*v[i,j] + gamma[l] + delta[l]/v[i,j]) /
+             (epsilon[l]*v[i,j]^2 + zeta[l]*v[i,j] + hta[l])) > "resultados.txt";
+    }
+    for{k in K}{
+        printf "Emisiones ruta %s: %s\n", k, sum{(i,j) in A: x[i,j,k] > 0.9}
+        sum{l in 0..4}
+            d[i,j] *
+            ((alpha[l]*v[i,j]^2 + beta[l]*v[i,j] + gamma[l] + delta[l]/v[i,j]) /
+             (epsilon[l]*v[i,j]^2 + zeta[l]*v[i,j] + hta[l])) > "resultados.txt" ;
+       printf "Distancia ruta %s: %s\n", k, sum{(i,j) in A: x[i,j,k] > 0.9} d[i,j] > "resultados.txt" ;
+    }
+
+
+}
+
+### NUEVO: guardar MV[i] en archivo
+printf "# Mejores valores por objetivo\n" > "mejores_valores.txt";
+for {i in objetivos} {
+    printf "MV[%d] = %f\n", i, MV[i] > "mejores_valores.txt";
+}
+
+# Inicializar peores valores con los mismos MV
+for {i in objetivos} {
+    let PV[i] := MV[i];
+}
+
+# Matriz para almacenar el frente
+param FronteraPareto{ejecuciones, objetivos} default 0;
+param TCPU2{ejecuciones}   default 0 ;
+param Ttotal default 0 ;
+
+printf "\n=========== FASE 2: Frontera de Pareto (normalizada) ===========\n";
+
+for {ejec in ejecuciones} {
+    printf "\n>> EJECUCION %d\n", ejec;
+
+    for {i in objetivos} {
+        let betha[i] := sigma[ejec,i];
+        printf "sigma[%d,%d] = %f\n", ejec, i, sigma[ejec,i];
+    }
+    objective FO2;
+    let Ttotal := time() ;
+    solve;
+    let TCPU2[ejec] := time() - Ttotal ;
+
+
+    if MV[1] == 0 || MV[2] == 0 then {
+        printf "\n** El modelo es INVIABLE. No se puede generar la frontera de Pareto. **\n";
+        exit 0;
+    }
+
+    printf "F_objetivos: ";
+    for {i in objetivos} {
+        printf "F[%d]=%f ", i, F[i];
+        let FronteraPareto[ejec, i] := F[i];
+        if F[i] > PV[i] then {
+            let PV[i] := F[i];
+        }
+    }
+    printf "\n";
+
+    printf "Valor objetivo combinado (FO2): %f\n", FO2;
+
+    printf "\n==== EJECUCION %d ====\n", ejec > "resultados.txt";
+    printf "FO2 = %f\n", FO2 > "resultados.txt";
+    for {i in objetivos} {
+        printf "F[%d] = %f \n", i, F[i] > "resultados.txt";
+    }
+
+    printf"------------------------------\n" > "resultados.txt";
+    for {i in N, j in N, k in K: (i,j) in A and x[i,j,k] > 0.9} {
+        printf "Vehiculo %s: %s -> %s\n", k, i, j > "resultados.txt";
+    }
+    for {i in N, j in N, k in K: (i,j) in A and x[i,j,k] > 0.9} {
+        printf "%s : D = %s, R= %s\n", i, D[i,k], Ri[i,k] > "resultados.txt";
+    }
+    for {i in N, j in S, k in K: (i,j) in A and x[i,j,k] > 0.9} {
+        printf "%s : D = %s, R= %s\n", j, D[j,k], Ri[j,k] > "resultados.txt";
+    }
+    for{(i,j) in A, k in K: x[i,j,k] > 0.9}{
+        printf "(%s,%s)\n", i, j > "resultados.txt";
+        for{l in 0..4}{
+            printf "l: %s, d[i,j]:%s, v[i,j]:%s, alpha[l]*v[i,j]^2: %s, beta[l]*v[i,j]: %s, gamma[l]: %s, delta[l]/v[i,j]: %s, epsilon[l]*v[i,j]^2: %s,  zeta[l]*v[i,j]: %s, hta[l]: %s\n", l, d[i,j], v[i,j], alpha[l]*v[i,j]^2, beta[l]*v[i,j], gamma[l], delta[l]/v[i,j], epsilon[l]*v[i,j]^2, zeta[l]*v[i,j], hta[l] > "resultados.txt";
+            printf "numerador:%s, denominador: %s, resultado:%s\n",(alpha[l]*v[i,j]^2 + beta[l]*v[i,j] + gamma[l] + delta[l]/v[i,j]), (epsilon[l]*v[i,j]^2 + zeta[l]*v[i,j] + hta[l]),  ((alpha[l]*v[i,j]^2 + beta[l]*v[i,j] + gamma[l] + delta[l]/v[i,j]) /
+             (epsilon[l]*v[i,j]^2 + zeta[l]*v[i,j] + hta[l])) > "resultados.txt";
+            }
+        printf "sum %s\n\n", sum{l in 0..4}
+            d[i,j] *
+            ((alpha[l]*v[i,j]^2 + beta[l]*v[i,j] + gamma[l] + delta[l]/v[i,j]) /
+             (epsilon[l]*v[i,j]^2 + zeta[l]*v[i,j] + hta[l])) > "resultados.txt";
+    }
+    for{k in K}{
+        printf "Emisiones ruta %s: %s\n", k, sum{(i,j) in A: x[i,j,k] > 0.9}
+        sum{l in 0..4}
+            d[i,j] *
+            ((alpha[l]*v[i,j]^2 + beta[l]*v[i,j] + gamma[l] + delta[l]/v[i,j]) /
+             (epsilon[l]*v[i,j]^2 + zeta[l]*v[i,j] + hta[l])) > "resultados.txt" ;
+       printf "Distancia ruta %s: %s\n", k, sum{(i,j) in A: x[i,j,k] > 0.9} d[i,j] > "resultados.txt" ;
+    }
+}
+
+# ---------------------- MOSTRAR FRENTE DE PARETO FINAL ----------------------
+printf "\n=========== FRENTE DE PARETO FINAL ===========\n";
+for {ejec in ejecuciones} {
+    if FronteraPareto[ejec,1] != 0 || FronteraPareto[ejec,2] != 0 then {
+        printf "Punto %d: ", ejec;
+        for {i in objetivos} {
+            printf "F[%d] = %f ", i, FronteraPareto[ejec,i];
+        }
+        printf "\n";
+    }
+}
+
+# Guardar el frente a archivo externo
+printf "\n# Frontera de Pareto\n" > "frontera_pareto.txt";
+for {ejec in ejecuciones} {
+    if FronteraPareto[ejec,1] != 0 || FronteraPareto[ejec,2] != 0 then {
+        for {i in objetivos} {
+            printf "%f ", FronteraPareto[ejec,i] > "frontera_pareto.txt";
+        }
+        printf "%f ", TCPU2[ejec] > "frontera_pareto.txt";
+        printf "\n" > "frontera_pareto.txt";
+    }
+}
+
+# Mostrar peores valores
+printf "\n>>> PV = {";
+for {i in objetivos} {
+    printf "%f ", PV[i];
+}
+printf "}\n";
+
+printf "\n=========== FIN DE EJECUCIONES ===========\n";
