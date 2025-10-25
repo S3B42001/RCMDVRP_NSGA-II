@@ -49,3 +49,6 @@ for rep in $(seq 1 "$REPS"); do
             [ -f best_pop.out ]    && mv best_pop.out    "Results_nsga2/best_pop_Instance${i}_it${rep}.out"
     done
 done
+for i in "${INSTANCIAS[@]}"; do
+    [ -f APF_${i}.dat ] && mv APF_${i}.dat "Results_nsga2/APF_${i}.dat"
+done

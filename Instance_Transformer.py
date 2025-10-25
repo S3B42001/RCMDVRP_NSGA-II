@@ -8,14 +8,43 @@ def read_instance_txt(filename):
     with open(filename, 'r') as f:
         lines = [line.strip() for line in f if line.strip()]
 
-    n = int(lines[0])
+    # Header value (declared n) may be inconsistent with the actual data that follows.
+    # Parse header but validate lengths below and prefer the actual number of coordinate lines
+    # to avoid silently producing truncated .dat files.
+    n_header = int(lines[0])
     risk_threshold = float(lines[1])
     demands = list(map(float, lines[2].split()))
     coords = [tuple(map(float, line.split())) for line in lines[3:]]
+
+    # Validate consistency between header and parsed lists
+    len_demands = len(demands)
+    len_coords = len(coords)
+    if n_header != len_demands or n_header != len_coords or len_demands != len_coords:
+        print(f"[Instance_Transformer] WARNING: header n={n_header}, demands_count={len_demands}, coords_count={len_coords}.")
+        # Prefer the number of coordinate lines as the authoritative n (most robust for geometric instances)
+        # and adjust/truncate/pad the demands list to match. This prevents generating .dat with unexpected index ranges.
+        n = len_coords
+        if len_demands < n:
+            # If some demands are missing, pad with zeros (assume depot/zero-demand) and warn.
+            pad = [0.0] * (n - len_demands)
+            demands = demands + pad
+            print(f"[Instance_Transformer] INFO: padded demands from {len_demands} to {n} with zeros.")
+        elif len_demands > n:
+            # Truncate extra demand entries to match coordinates.
+            demands = demands[:n]
+            print(f"[Instance_Transformer] INFO: truncated demands from {len_demands} to {n} to match coords.")
+    else:
+        n = n_header
+
     return n, risk_threshold, demands, coords
 
 def write_dat_file(n, risk_threshold, demands, coords, output_filename):
     dat = []
+
+    # Ensure internal n matches provided lists to avoid index errors or truncated outputs.
+    if n != len(coords) or n != len(demands):
+        print(f"[Instance_Transformer] WARNING: write_dat_file received n={n} but len(coords)={len(coords)}, len(demands)={len(demands)}. Using n=len(coords)={len(coords)} for generation.")
+        n = len(coords)
 
     nodes = list(range(1, n + 1))
     depot_indices = [i + 1 for i, d in enumerate(demands) if d == 0]
@@ -97,7 +126,8 @@ def write_dat_file(n, risk_threshold, demands, coords, output_filename):
 
 if __name__ == "__main__":
     import argparse
-    instancias = [11, 20, 26, 38, 53, 65, 80, 95, 126, 146, 210, 338]
+    # instancias = [11, 20, 26, 38, 53, 65, 80, 95, 126, 146, 210, 338]
+    instancias = [80]
 
     parser = argparse.ArgumentParser(description="Convertidor de instancias TXT a archivo .dat para RCMDVRP")
     parser.add_argument("input_file", help="Archivo .txt de instancia")

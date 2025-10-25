@@ -3,6 +3,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <math.h>
+# include <string.h>
 
 # include "global.h"
 # include "rand.h"
@@ -62,6 +63,12 @@ void report_pop (population *pop, FILE *fpt)
 void report_feasible (population *pop, FILE *fpt)
 {
     int i, j;
+    /* Prepare APF_<n_customers+n_depots> file in append mode */
+    FILE *fapf = NULL;
+    char apf_name[128];
+    int apf_id = n_customers + n_depots;
+    snprintf(apf_name, sizeof(apf_name), "APF_%d.dat", apf_id);
+    fapf = fopen(apf_name, "a");
 /*     int i, j, k; */
     for (i=0; i<popsize; i++)
     {
@@ -70,6 +77,12 @@ void report_feasible (population *pop, FILE *fpt)
             for (j=0; j<nobj; j++)
             {
                 fprintf(fpt,"%e\t",pop->ind[i].obj[j]);
+                if (fapf != NULL) {
+                    fprintf(fapf, "%e\t", pop->ind[i].obj[j]);
+                }
+            }
+            if (fapf != NULL) {
+                fprintf(fapf, "\n");
             }
             if (ncon!=0)
             {
@@ -78,23 +91,6 @@ void report_feasible (population *pop, FILE *fpt)
                     fprintf(fpt,"%e\t",pop->ind[i].constr[j]);
                 }
             }
-/*             if (nreal!=0)
-            {
-                for (j=0; j<nreal; j++)
-                {
-                    fprintf(fpt,"%e\t",pop->ind[i].xreal[j]);
-                }
-            }
-            if (nbin!=0)
-            {
-                for (j=0; j<nbin; j++)
-                {
-                    for (k=0; k<nbits[j]; k++)
-                    {
-                        fprintf(fpt,"%d\t",pop->ind[i].gene[j][k]);
-                    }
-                }
-            } */
             fprintf(fpt,"%e\t",pop->ind[i].constr_violation);
             fprintf(fpt,"%d\t",pop->ind[i].rank);
             fprintf(fpt,"%e\n",pop->ind[i].crowd_dist);
@@ -109,6 +105,7 @@ void report_feasible (population *pop, FILE *fpt)
             }
         }
     }
+    if (fapf != NULL) fclose(fapf);
     return;
 }
 

@@ -131,68 +131,9 @@ int main (int argc, char **argv)
         exit (1);
     }
 
-    /* printf("\n Enter the number of binary variables : ");
-    scanf("%d",&nbin);
-    if (nbin<0)
-    {
-        printf ("\n number of binary variables entered is : %d",nbin);
-        printf ("\n Wrong number of binary variables entered, hence exiting \n");
-        exit(1);
-    }
-    if (nbin != 0)
-    {
-        nbits = (int *)malloc(nbin*sizeof(int));
-        min_binvar = (double *)malloc(nbin*sizeof(double));
-        max_binvar = (double *)malloc(nbin*sizeof(double));
-        for (i=0; i<nbin; i++)
-        {
-            printf ("\n Enter the number of bits for binary variable %d : ",i+1);
-            scanf ("%d",&nbits[i]);
-            if (nbits[i] < 1)
-            {
-                printf("\n Wrong number of bits for binary variable entered, hence exiting");
-                exit(1);
-            }
-            printf ("\n Enter the lower limit of binary variable %d : ",i+1);
-            scanf ("%lf",&min_binvar[i]);
-            printf ("\n Enter the upper limit of binary variable %d : ",i+1);
-            scanf ("%lf",&max_binvar[i]);
-            if (max_binvar[i] <= min_binvar[i])
-            {
-                printf("\n Wrong limits entered for the min and max bounds of binary variable entered, hence exiting \n");
-                exit(1);
-            }
-        }
-    } */
-
-/*     printf("\n Enter the number of real variables : ");
-    scanf("%d", &nreal);
-    if (nreal < 0)
-    {
-        printf ("\n number of real variables entered is : %d", nreal);
-        printf ("\n Wrong number of real variables entered, hence exiting \n");
-        exit(1);
-    } */
     nreal = 1;
     ncon = 3;
-    /* if (nreal != 0)
-    {
-        min_realvar = (double *)malloc(nreal * sizeof(double));
-        max_realvar = (double *)malloc(nreal * sizeof(double));
-        for (i = 0; i < nreal; i++)
-        {
-            printf ("\n Enter the lower limit of real variable %d : ", i+1);
-            scanf ("%lf", &min_realvar[i]);
-            printf ("\n Enter the upper limit of real variable %d : ", i+1);
-            scanf ("%lf", &max_realvar[i]);
-            if (max_realvar[i] <= min_realvar[i])
-            {
-                printf("\n Wrong limits entered for the min and max bounds of real variable entered, hence exiting \n");
-                exit(1);
-            }
-        }
-    }
-    */
+
     pcross_bin = atof (argv[6]);
     if (pcross_bin<0.0 || pcross_bin>1.0){
         printf("\n Probability of crossover entered is : %e",pcross_bin);

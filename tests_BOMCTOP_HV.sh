@@ -83,7 +83,7 @@ for instance in ${instanceList}; do
         rm -rf ${screen}
     if [ -s ${apf} ]; then
         echo "./${dirhv}/hv -r \"${pr1} ${pr2}\" ${apf} > ${screen}"
-        ./${dirhv}/hv -r "${pr1} ${pr2}" ${apf} > ${screen}
+        ./${dirhv}/hv -r "${pr1} ${pr2}" ${apf} > ${screen} #hipervolumen agregado, parametros
         hvApf=$(tail -1 ${screen})
     fi
 

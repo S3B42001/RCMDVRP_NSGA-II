@@ -4,3 +4,5 @@
 *.log
 *.zip
 Frentes_Pareto/
+Results_nsga2_100gen/
+Results_nsga2_10000gen/
